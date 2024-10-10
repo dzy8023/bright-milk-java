@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ncu.software.mapper.BookMilkOrderMapper">
+    <insert id="insertBatch">
+        insert into order_detail (name, image, order_id, milk_id, number,amount)
+        values
+            <foreach collection="orderDetailList" item="item" separator=",">
+                (#{item.name}, #{item.image}, #{item.orderId}, #{item.milkId}, #{item.number}, #{item.amount})
+            </foreach>
+    </insert>
+    <update id="updateStatusByIds">
+        update book_milk_order set status=#{status},update_time=#{updateTime} where id in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+
+            #{item}
+        </foreach>
+    </update>
+    <update id="update">
+        update book_milk_order
+        <set>
+            <if test="status != null">status=#{status},</if>
+            <if test="updateTime != null">update_time=#{updateTime},</if>
+            <if test="updateUser != null">update_user=#{updateUser},</if>
+        </set>
+        where id=#{id}
+    </update>
+    <select id="pageQuery" resultType="ncu.software.entity.BookMilkOrder">
+        select * from book_milk_order
+         where date(update_time)=#{day} book_id in
+         <foreach collection="bookMilkIds" item="item" open="(" separator="," close=")">
+             #{item}
+         </foreach>
+
+    </select>
+
+
+</mapper>

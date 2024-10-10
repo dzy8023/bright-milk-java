@@ -1,0 +1,58 @@
+server:
+  port: 8888
+
+spring:
+  config:
+    import: optional:.env[.properties]
+  application:
+    name: milk-server
+  profiles:
+    active: dev
+#  main:
+#    allow-circular-references: true
+  aop:
+    proxy-target-class: true
+  datasource:
+    driver-class-name: ${milk.datasource.driver-class-name}
+    url: jdbc:mysql://${milk.datasource.host}:${milk.datasource.port}/${milk.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${milk.datasource.username}
+    password: ${milk.datasource.password}
+#  data:
+#    redis:
+#      host: ${milk.redis.host}
+#      password: ${milk.redis.password}
+#      port: ${milk.redis.port}
+#      database: ${milk.redis.database}
+
+mybatis:
+  #mapper配置文件, 如果不配置，则mapper映射文件要同包同名
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: ncu.software.entity
+  configuration:
+    #开启驼峰命名
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    ncu:
+      software:
+        mapper: DEBUG
+        service: INFO
+        controller: INFO
+  file:
+    name: "logs/${spring.application.name}.log"
+
+milk:
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    admin-secret-key: ncuadmin
+    # 设置jwt过期时间
+    admin-ttl: 72000000
+    # 设置前端传递过来的令牌名称
+    admin-token-name: token
+
+    user-secret-key: ncuuser
+    user-ttl: 72000000
+    user-token-name: token
+
+

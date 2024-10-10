@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ncu.software.mapper.MilkDetailMapper">
+
+    <update id="updateByMID">
+        update milk_detail
+        <set>
+            <if test=" price!=null">price=#{price},</if>
+            <if test=" image!=null">image=#{image},</if>
+            <if test=" standard!=null">standard=#{standard},</if>
+            <if test=" packId!=null">pack_id=#{packId},</if>
+            <if test=" description!=null">description=#{description},</if>
+        </set>
+        where milk_id=#{milkId}
+    </update>
+    <update id="updateBatch">
+        update milk_detail set amount=#{amount} where milk_id in
+          <foreach collection="milkDetailList" item="milkDetail" open="(" separator="," close=")">
+            #{milkDetail.milkId}
+          </foreach>
+    </update>
+
+</mapper>

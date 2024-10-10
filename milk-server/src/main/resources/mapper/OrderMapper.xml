@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ncu.software.mapper.OrderMapper">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into orders(number,status,user_id,actual_payment,due_payment,create_time,update_time)
+        values(#{number},#{status},#{userId},#{actualPayment},#{duePayment},#{createTime},#{updateTime})
+    </insert>
+
+
+    <select id="pageQuery" resultType="ncu.software.vo.OrderVO">
+        select o.id,o.number,o.status,o.user_id,u.name,u.phone,o.actual_payment,
+         o.due_payment,o.create_time,o.update_time  from orders o,user u
+         where o.user_id=u.id
+            <if test="userId!=null ">and o.user_id=#{userId}</if>
+            <if test="status!=null ">and o.status =#{status}</if>
+        order by create_time desc
+    </select>
+    <select id="getTurnoverStatistics" resultType="java.util.HashMap">
+        select DATE_FORMAT(update_time,'%Y-%m-%d') as date,sum(actual_payment) as turnover from orders
+        where status=3 and update_time between #{beginDateTime} and #{endDateTime}
+        group by  date order by date desc
+    </select>
+    <select id="getOrderStatistics" resultType="java.util.HashMap">
+        select case status
+                   when 1 then '待付款'
+                   when 2 then '待完成'
+                   when 3 then '已完成'
+                   when 4 then '已取消'
+                   else '退款' end as status,
+               count(*)            as count
+        from orders
+        where    update_time between #{beginDateTime} and #{endDateTime}
+        group by status
+        order by status desc
+    </select>
+    <select id="getSaleStatistics" resultType="ncu.software.vo.OrderBasicDetailVO">
+        select od.milk_id as milkId, od.name as name, od.image as image, sum(od.number) as number
+        from order_detail od
+        where od.order_id in
+              (select id from orders where status = 3 and update_time between #{beginDateTime} and #{endDateTime})
+        group by od.milk_id, od.name, od.image
+        order by number
+        limit 10
+    </select>
+    <select id="getMilkSaleData" resultType="java.util.HashMap">
+        select DATE_FORMAT(update_time,'%Y-%m-%d') as date,sum(od.number) as number
+        from order_detail od,orders o
+        where od.order_id=o.id and o.status=3 and o.update_time between #{beginDateTime} and #{endDateTime} and od.milk_id=#{id}
+        group by date
+        order by date desc
+    </select>
+    <select id="getMilksSaleData" resultType="ncu.software.vo.MilkSaleDataVO">
+        select od.milk_id     as id,
+               od.name        as name,
+               od.image       as image,
+               sum(od.number) as number,
+               sum(od.amount) as totalAmount
+        from order_detail od
+                 join orders o on od.order_id = o.id
+        where o.status = 3
+          and o.update_time between #{beginDateTime} and #{endDateTime}
+        group by id,name,image
+        order by totalAmount desc
+    </select>
+</mapper>

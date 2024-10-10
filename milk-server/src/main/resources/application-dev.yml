@@ -1,0 +1,20 @@
+milk:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    host: localhost
+    port: 3306
+    database: bright_milk
+    username: root #数据库用户名，替换成你自己的
+    password: ${MYSQL_PASSWORD} #密码，替换成你自己的
+
+#  redis:
+#    host: localhost
+#    password: 123456
+#    port: 6379
+#    database: 0
+
+  minoss:
+    endpoint: http://127.0.0.1:9000 #minio服务所在地址 API，{不用改}
+    access-key-id: ${MINOSS_ACCESS_KEY_ID} #访问的key {会有有效时间，过期了重新创一个就行}
+    access-key-secret: ${MINOSS_ACCESS_KEY_SECRET} #访问的密钥
+    bucket-name: bright-milk #bucket名称

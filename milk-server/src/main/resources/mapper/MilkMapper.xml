@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ncu.software.mapper.MilkMapper">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into milk(name, category_id, status, create_time, update_time, create_user, update_user)
+        values (#{name}, #{categoryId}, #{status}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
+    </insert>
+
+    <select id="pageQuery" resultType="ncu.software.vo.MilkVO">
+        select m.id,m.name,m.category_id,m.status,md.price,md.image,md.amount,m.update_time
+        from milk as m ,milk_detail as md where m.id=md.milk_id
+            <if test="name!=null and name!=''">and m.name like concat('%',#{name},'%')</if>
+            <if test="categoryId !=null">and m.category_id=#{categoryId}</if>
+            <if test="status !=null">and m.status=#{status}</if>
+            <if test="packId!=null">and md.pack_id=#{packId}</if>
+         order by m.update_time desc
+    </select>
+
+    <select id="getPackByPId" resultType="ncu.software.entity.Pack">
+        select * from pack where id = #{packId}
+    </select>
+    <select id="getMVOByMID" resultType="ncu.software.vo.MilkVO">
+        select m.id, m.name, m.category_id, m.status, md.price, md.image, md.amount
+        from milk as m
+                 LEFT JOIN milk_detail as md on
+            m.id = md.milk_id
+        where m.status = #{status}
+          and m.id = #{id}
+    </select>
+    <select id="userPageQuery" resultType="ncu.software.vo.UserMilkVO">
+        select m.id as id, m.name as name , c.name as categoryName,
+               md.price as price, p.name as packName, md.image as image from milk m,milk_detail md, pack p,category c
+        where m.id=md.milk_id and m.category_id=c.id and md.pack_id=p.id
+        <if test="name!=null and name!=''">and m.name like concat('%',#{name},'%')</if>
+        <if test="categoryId !=null">and m.category_id=#{categoryId}</if>
+        <if test="status !=null">and m.status=#{status}</if>
+        <if test="packId!=null">and md.pack_id=#{packId}</if>
+    </select>
+    <select id="getMilkDisDetail" resultType="ncu.software.vo.MilkDisDetailVO">
+        select m.id as id,m.name as name,c.name as categoryName,if(c.type=1,'低温奶','常温奶') as typeName, m.status as status,
+          md.price as price, md.image as image,md.standard as standard, p.name as packName,md.description as description,md.amount as amount
+        from milk as m join milk_detail as md on m.id=md.milk_id join pack as p on md.pack_id=p.id join category as c on m.category_id=c.id
+        where  m.id=#{id}
+    </select>
+
+    <update id="update" parameterType="ncu.software.entity.Milk">
+        update milk
+        <set>
+            <if test=" name!=null and name!=''">name=#{name},</if>
+            <if test=" categoryId!=null">category_id=#{categoryId},</if>
+            <if test=" status!=null">status=#{status},</if>
+            <if test=" updateTime!=null">update_time=#{updateTime},</if>
+            <if test=" updateUser!=null">update_user=#{updateUser},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+
+</mapper>

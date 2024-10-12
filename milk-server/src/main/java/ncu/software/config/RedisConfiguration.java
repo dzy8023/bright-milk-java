@@ -20,7 +20,6 @@ public class RedisConfiguration {
         //设置key的序列化方式StringRedisSerializer
         redisTemplate.setKeySerializer(RedisSerializer.string());
         //  redisTemplate.setValueSerializer(RedisSerializer.string());
-
         return redisTemplate;
     }
 }

@@ -62,7 +62,6 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 //        registry.addResourceHandler("favicon.ico").addResourceLocations("classpath:/static/");
 //    }
 
-
 //    @Bean
 //    public OpenAPI springShopOpenApi() {
 //        log.info("swagger配置成功");

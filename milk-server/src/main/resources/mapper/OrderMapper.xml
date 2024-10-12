@@ -6,8 +6,6 @@
         insert into orders(number,status,user_id,actual_payment,due_payment,create_time,update_time)
         values(#{number},#{status},#{userId},#{actualPayment},#{duePayment},#{createTime},#{updateTime})
     </insert>
-
-
     <select id="pageQuery" resultType="ncu.software.vo.OrderVO">
         select o.id,o.number,o.status,o.user_id,u.name,u.phone,o.actual_payment,
          o.due_payment,o.create_time,o.update_time  from orders o,user u
@@ -62,5 +60,11 @@
           and o.update_time between #{beginDateTime} and #{endDateTime}
         group by id,name,image
         order by totalAmount desc
+    </select>
+    <select id="getOrderOfOneDayStatistics" resultType="ncu.software.vo.OrderOfOneDayVO">
+        select DATE_FORMAT(update_time,'%Y-%m-%d') as date,sum(actual_payment) as turnover ,count(*) as totalOrder,
+               count( if(status=3,1,null)) as validOrder from orders
+        where update_time between #{beginDateTime} and #{endDateTime}
+        group by  date order by date desc
     </select>
 </mapper>

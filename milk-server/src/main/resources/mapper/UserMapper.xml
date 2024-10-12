@@ -19,8 +19,8 @@
             <if test="phone != null and phone != ''">and phone like concat('%',#{phone},'%')</if>
         </where>
     </select>
-    <select id="getNewUserStatistics" resultType="java.util.HashMap">
-        select DATE_FORMAT(create_time, '%Y-%m-%d') as date, count(*) as newUsers
+    <select id="getNewUserStatistics" resultType="ncu.software.vo.NewUserVO">
+        select DATE_FORMAT(create_time, '%Y-%m-%d') as date, count(*) as newUser
         from user
         where create_time between #{beginDateTime} and #{endDateTime}
         group by DATE_FORMAT(create_time, '%Y-%m-%d')

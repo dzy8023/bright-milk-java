@@ -1,15 +1,14 @@
 package ncu.software.mapper;
 
 import com.github.pagehelper.Page;
-import lombok.ToString;
 import ncu.software.dto.OrderPageQueryDTO;
 import ncu.software.entity.Orders;
 import ncu.software.vo.MilkSaleDataVO;
 import ncu.software.vo.OrderBasicDetailVO;
+import ncu.software.vo.OrderOfOneDayVO;
 import ncu.software.vo.OrderVO;
 import org.apache.ibatis.annotations.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -46,11 +45,9 @@ public interface OrderMapper {
 
     @Update("update orders set actual_payment = #{actualPayment} where id = #{id}")
     void updateActualPayment(Orders orders);
-@Delete("delete from orders where id = #{id}")
+    @Delete("delete from orders where id = #{id}")
     void deleteById(Long id);
-
     List<HashMap<String, Double>> getTurnoverStatistics(LocalDateTime beginDateTime, LocalDateTime endDateTime);
-
     List<HashMap<String, Integer>> getOrderStatistics(LocalDateTime beginDateTime, LocalDateTime endDateTime);
 
     List<OrderBasicDetailVO> getSaleStatistics(LocalDateTime beginDateTime, LocalDateTime endDateTime);
@@ -58,4 +55,6 @@ public interface OrderMapper {
     List<HashMap<String, Integer>> getMilkSaleData(LocalDateTime beginDateTime, LocalDateTime endDateTime, Long id);
 
     List<MilkSaleDataVO> getMilksSaleData(LocalDateTime beginDateTime, LocalDateTime endDateTime);
+
+    List<OrderOfOneDayVO> getOrderOfOneDayStatistics(LocalDateTime beginDateTime, LocalDateTime endDateTime);
 }

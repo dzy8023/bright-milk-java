@@ -15,8 +15,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 @Slf4j
 public class SseEmitterServiceImpl implements SseEmitterService {
-    private static AtomicInteger counter = new AtomicInteger(0);
-    private static Map<Long, SseEmitter> sseEmitterMap = new ConcurrentHashMap<>();
+    private static final AtomicInteger counter = new AtomicInteger(0);
+    private static final Map<Long, SseEmitter> sseEmitterMap = new ConcurrentHashMap<>();
 
     @Override
     public SseEmitter connect(Long userId) {
@@ -34,16 +34,15 @@ public class SseEmitterServiceImpl implements SseEmitterService {
             log.info("连接超时-{}", userId);
             disconnect(userId);
         });
-        if (sseEmitterMap.containsKey(userId)) {
-            disconnect(userId);
-        }
         try {
             emitter.send(SseEmitter.event().name("init").data("连接已建立"));
         } catch (IOException e) {
             log.error("发送初始消息失败-{}:{}", userId, e.getMessage());
         }
+        if(!sseEmitterMap.containsKey(userId)){
+            counter.incrementAndGet();
+        }
         sseEmitterMap.put(userId, emitter);
-        counter.incrementAndGet();
         log.info("创建新的sse连接，当前员工：{}", userId);
         return emitter;
     }

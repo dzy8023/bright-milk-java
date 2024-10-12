@@ -6,8 +6,6 @@
         insert into book_milk(user_id,order_id,type,status,start_time,end_time)
         values(#{userId},#{orderId},#{type},#{status},#{startTime},#{endTime})
     </insert>
-
-
     <select id="pageQuery" resultType="ncu.software.vo.BookMilkPageVO">
         select bm.id,u.id,u.name,o.id,o.number,bm.type,bm.status,bm.start_time,bm.end_time
          from book_milk bm,user u,orders o

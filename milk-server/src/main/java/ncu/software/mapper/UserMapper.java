@@ -3,6 +3,7 @@ package ncu.software.mapper;
 import com.github.pagehelper.Page;
 import ncu.software.dto.UserPageQueryDTO;
 import ncu.software.entity.User;
+import ncu.software.vo.NewUserVO;
 import org.apache.ibatis.annotations.*;
 
 import java.math.BigDecimal;
@@ -80,7 +81,7 @@ public interface UserMapper {
     Page<User> pageQuery(UserPageQueryDTO userPageQueryDTO);
 
 
-    List<HashMap<String, Integer>> getNewUserStatistics(LocalDateTime beginDateTime, LocalDateTime endDateTime);
+    List<NewUserVO> getNewUserStatistics(LocalDateTime beginDateTime, LocalDateTime endDateTime);
 
     @Select("SELECT COUNT(*) FROM user WHERE create_time < #{endDateTime}")
     Integer countUserBefore(LocalDateTime endDateTime);

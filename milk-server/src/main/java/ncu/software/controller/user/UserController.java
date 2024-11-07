@@ -12,6 +12,7 @@ import ncu.software.entity.User;
 import ncu.software.enumeration.MessageType;
 import ncu.software.properties.JwtProperties;
 import ncu.software.result.Result;
+import ncu.software.service.SseEmitterService;
 import ncu.software.service.UserService;
 import ncu.software.utils.JwtUtil;
 import ncu.software.vo.UserLoginVO;
@@ -32,20 +33,15 @@ public class UserController {
     @Autowired
     private JwtProperties jwtProperties;
     @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
+    private SseEmitterService sseEmitterService;
 
     @GetMapping("/test")
     public Result<String> test(@RequestParam(value = "userId", required = false) String userId, String message) {
-        SseEvent<SseMessage> sseEvent = new SseEvent<>(this);
+        log.info("test: userId={}, message={}", userId, message);
         //构造json数据
         SseMessage sseMessage = new SseMessage();
         sseMessage.setMessage(message);
-        sseMessage.setPublishTime(LocalDateTime.now());
-        sseMessage.setPublisherId(BaseContext.getCurrentId());
-        sseEvent.setMsg(sseMessage);
-        sseEvent.setUserId(userId == null ? null : Long.valueOf(userId));
-        sseEvent.setType(userId == null ? MessageType.ALL : MessageType.SIGNAL);
-        applicationEventPublisher.publishEvent(sseEvent);
+        sseEmitterService.sendMessage(sseMessage,"user-"+BaseContext.getCurrentId(),"admin-"+userId,MessageType.ALL);
         return Result.success("发送成功");
     }
 

@@ -59,8 +59,8 @@ public class StatisticsServiceImpl implements StatisticsService {
         log.info("exportBusinessData types:{}, begin:{}, end:{}", types, begin, end);
         LocalDateTime beginDateTime = LocalDateTime.of(begin, LocalTime.MIN);
         LocalDateTime endDateTime = LocalDateTime.of(end, LocalTime.MAX);
-        Map<String, Object> data = formatData(beginDateTime, endDateTime);
-        List<Sales> sales = (List<Sales>) data.get("sales");
+        Map<String,Object> data = formatData(beginDateTime, endDateTime);
+        List<Sales> sales =(List<Sales>) data.get("sales");
         Header header = (Header) data.get("header");
         List<Detail> details = (List<Detail>) data.get("details");
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");

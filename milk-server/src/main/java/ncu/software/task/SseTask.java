@@ -11,9 +11,10 @@ import org.springframework.stereotype.Component;
 public class SseTask {
     @Autowired
     private SseEmitterService sseEmitterService;
-    @Scheduled(cron = "0/30 * * * * *")
+    // 每分钟发送一次 心跳包
+    @Scheduled(cron = "0 * * * * *")
     public void sendSse() {
-        int count=sseEmitterService.heartBeat();
-        log.info("Send sse to all-"+count);
+        String count=sseEmitterService.heartBeat();
+        log.info("Send sse to all-"+"admin["+count.split("-")[0]+"] user["+count.split("-")[1]+"]");
     }
 }

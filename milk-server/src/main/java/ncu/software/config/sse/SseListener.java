@@ -17,7 +17,7 @@ public class SseListener implements ApplicationListener<SseEvent> {
         if(event.getType()== MessageType.ALL){
            sseEmitterService.sendToAll(event.getMsg());
         } else if (event.getType() == MessageType.SIGNAL) {
-            sseEmitterService.sendMessage(event.getUserId(),event.getMsg());
+            sseEmitterService.sendMessage(event.getReceiverId(),event.getMsg());
         }
     }
 }

@@ -11,9 +11,11 @@ import org.springframework.context.ApplicationEvent;
 public class SseEvent<T>extends ApplicationEvent {
 
     private MessageType type=MessageType.SIGNAL;
-    private Long userId;
+    private String receiverId;
+    private String publisherId;
     private T msg;
-    public SseEvent(Object source) {
+    public SseEvent(Object source,String publisherId) {
         super(source);
+        this.publisherId=publisherId;
     }
 }

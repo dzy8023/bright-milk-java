@@ -43,7 +43,6 @@
         from milk as m join milk_detail as md on m.id=md.milk_id join pack as p on md.pack_id=p.id join category as c on m.category_id=c.id
         where  m.id=#{id}
     </select>
-
     <update id="update" parameterType="ncu.software.entity.Milk">
         update milk
         <set>

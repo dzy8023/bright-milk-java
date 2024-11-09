@@ -15,7 +15,6 @@ import ncu.software.entity.Pack;
 import ncu.software.exception.PackNoFundException;
 import ncu.software.mapper.MilkDetailMapper;
 import ncu.software.mapper.MilkMapper;
-import ncu.software.mapper.OrderDetailMapper;
 import ncu.software.mapper.OrderMapper;
 import ncu.software.result.PageResult;
 import ncu.software.service.MilkService;
@@ -177,5 +176,10 @@ public class MilkServiceImpl implements MilkService {
     @Override
     public List<MilkSaleDataVO> getMilksSaleData(LocalDateTime beginDateTime, LocalDateTime endDateTime) {
         return orderMapper.getMilksSaleData(beginDateTime, endDateTime);
+    }
+
+    @Override
+    public List<String> getAllMilkName() {
+        return milkMapper.getAllMilkName();
     }
 }

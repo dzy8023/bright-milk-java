@@ -58,6 +58,11 @@ public class OrderController {
         orderService.deleteOrderById(id);
         return Result.success();
     }
+    @PostMapping("/oneMore/{orderId}")
+    public Result<String> oneMore(@PathVariable Long orderId) {
+        orderService.oneMore(orderId);
+        return Result.success();
+    }
 
 }
 

@@ -57,4 +57,6 @@ public interface OrderMapper {
     List<MilkSaleDataVO> getMilksSaleData(LocalDateTime beginDateTime, LocalDateTime endDateTime);
 
     List<OrderOfOneDayVO> getOrderOfOneDayStatistics(LocalDateTime beginDateTime, LocalDateTime endDateTime);
+@Update("update orders set status = #{status}, actual_payment = #{actualPayment},update_time = #{updateTime} where id = #{id}")
+    void payment(Orders orders);
 }

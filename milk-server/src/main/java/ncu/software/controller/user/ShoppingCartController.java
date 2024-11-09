@@ -8,6 +8,7 @@ import ncu.software.service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -23,10 +24,9 @@ public class ShoppingCartController {
      */
 
     @PostMapping("/add")
-    public Result<String> add(@RequestBody ShoppingCartDTO shoppingCartDTO) {
+    public Result<BigDecimal> add(@RequestBody ShoppingCartDTO shoppingCartDTO) {
         log.info("添加购物车:{}", shoppingCartDTO);
-        shoppingCartService.addShoppingCart(shoppingCartDTO);
-        return Result.success();
+        return Result.success( shoppingCartService.addShoppingCart(shoppingCartDTO));
     }
 
     /**
@@ -54,10 +54,9 @@ public class ShoppingCartController {
      * @return
      */
     @PostMapping("/sub")
-    public Result<String> sub(@RequestBody ShoppingCartDTO shoppingCartDTO){
+    public Result<BigDecimal> sub(@RequestBody ShoppingCartDTO shoppingCartDTO){
         log.info("删除购物车中一个商品:{}",shoppingCartDTO);
-        shoppingCartService.subShoppingCart(shoppingCartDTO);
-        return Result.success();
+        return Result.success( shoppingCartService.subShoppingCart(shoppingCartDTO));
     }
     @DeleteMapping
     public Result<String>del(Long id){

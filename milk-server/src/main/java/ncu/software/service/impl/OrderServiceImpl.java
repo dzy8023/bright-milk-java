@@ -92,8 +92,8 @@ public class OrderServiceImpl implements OrderService {
         userMapper.updateBalanceById(user);
         //更新订单状态
         orders.setStatus(Orders.COMPLETED);
-        orderMapper.updateStatus(orders);
-        orderMapper.updateActualPayment(orders);
+        orders.setUpdateTime(LocalDateTime.now());
+        orderMapper.payment(orders);
         //更新库存
         for (MilkDetail milkDetail : milkDetailList) {
             milkDetailMapper.updateAmountByMID(milkDetail);
@@ -103,6 +103,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderVO getOrderById(Long id) {
         Orders order = orderMapper.getById(id);
+        if (order == null || !Objects.equals(order.getUserId(), BaseContext.getCurrentId())) {
+            throw new BaseException("订单不存在");
+        }
         OrderVO orderVO = new OrderVO();
         BeanUtils.copyProperties(order, orderVO);
         orderVO.setOrderDetailList(orderDetailMapper.getOrderDetailList(order.getId()));
@@ -115,11 +118,31 @@ public class OrderServiceImpl implements OrderService {
         if (order == null || !Objects.equals(order.getUserId(), BaseContext.getCurrentId())) {
             throw new BaseException("订单不存在");
         }
-        if (Objects.equals(order.getStatus(), Orders.TO_BE_COMPLETED)) {
-            throw new BaseException("订单待完成不能删除");
+        if (Objects.equals(order.getStatus(), Orders.PENDING_PAYMENT)) {
+            orderMapper.deleteById(id);
+            orderDetailMapper.deleteBatch(id);
+            return;
         }
-        orderMapper.deleteById(id);
-        orderDetailMapper.deleteBatch(id);
+        throw new BaseException("只能删除待支付订单");
+    }
+
+    @Override
+    public void oneMore(Long orderId) {
+        Orders order = orderMapper.getById(orderId);
+        if (order == null || !Objects.equals(order.getUserId(), BaseContext.getCurrentId())) {
+            throw new BaseException("订单不存在");
+        }
+        if (Objects.equals(order.getStatus(), Orders.COMPLETED)) {
+            //插入购物车数据
+            List<ShoppingCart>shoppingCartList = milkDetailMapper.getOneMoreMilkDTOList(orderId);
+            shoppingCartList.forEach(shoppingCart -> {
+                shoppingCart.setUserId(BaseContext.getCurrentId());
+                shoppingCart.setCreateTime(LocalDateTime.now());
+            });
+            shoppingCartMapper.insertBatch(shoppingCartList);
+            return;
+        }
+        throw new BaseException("只能追加已完成订单");
     }
 
     /**

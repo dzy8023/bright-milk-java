@@ -1,10 +1,9 @@
 package ncu.software.mapper;
 
+import ncu.software.dto.MilkDTO;
 import ncu.software.entity.MilkDetail;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Update;
+import ncu.software.entity.ShoppingCart;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -60,4 +59,11 @@ public interface MilkDetailMapper {
      */
     @Update("update milk_detail md left join milk m on md.milk_id=m.id set md.amount =#{amount} where md.milk_id=#{milkId} ")
     void updateAmountByMID(MilkDetail milkDetail);
+@Select("select milk_id,amount from milk_detail where milk_id in (#{milkIds})")
+    List<MilkDTO> getMilkDTOListByIds(List<Long> milkIds);
+@Select("select md.milk_id as milkId,od.name as name,md.image as image,od.number as number,od.amount as amount " +
+        "from milk_detail md join milk m on md.id=m.id and m.status='1' " +
+        "join (select milk_id,name,number,amount from order_detail where order_id = #{orderId}) od " +
+        "on md.milk_id = od.milk_id and md.amount >= od.number")
+         List<ShoppingCart> getOneMoreMilkDTOList(Long orderId);
 }

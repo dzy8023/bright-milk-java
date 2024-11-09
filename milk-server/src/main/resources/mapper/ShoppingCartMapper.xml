@@ -4,4 +4,11 @@
 <mapper namespace="ncu.software.mapper.ShoppingCartMapper">
 
 
+    <insert id="insertBatch">
+        insert into shopping_cart (user_id,milk_id,name,image,number,amount,create_time)
+        values
+        <foreach collection="shoppingCartList" item="item" separator=",">
+            (#{item.userId},#{item.milkId},#{item.name},#{item.image},#{item.number},#{item.amount},#{item.createTime})
+        </foreach>
+    </insert>
 </mapper>

@@ -87,4 +87,6 @@ public interface MilkService {
     List<HashMap<String, Integer>> getMilkSaleData(LocalDate begin, LocalDate end, Long id);
 
     List<MilkSaleDataVO> getMilksSaleData(LocalDateTime beginDateTime, LocalDateTime endDateTime);
+
+    List<String> getAllMilkName();
 }

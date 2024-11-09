@@ -3,6 +3,7 @@ package ncu.software.service;
 import ncu.software.dto.ShoppingCartDTO;
 import ncu.software.entity.ShoppingCart;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ShoppingCartService {
@@ -10,7 +11,7 @@ public interface ShoppingCartService {
      * 向购物车添加商品
      * @param shoppingCartDTO
      */
-    void addShoppingCart(ShoppingCartDTO shoppingCartDTO);
+    BigDecimal addShoppingCart(ShoppingCartDTO shoppingCartDTO);
 
     /**
      * 获取购物车列表
@@ -27,7 +28,7 @@ public interface ShoppingCartService {
      * 从购物车移除一个商品
      * @param shoppingCartDTO
      */
-    void subShoppingCart(ShoppingCartDTO shoppingCartDTO);
+    BigDecimal subShoppingCart(ShoppingCartDTO shoppingCartDTO);
 
     /**
      * 从购物车移除一个商品

@@ -37,7 +37,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
      */
     @Transactional
     @Override
-    public void addShoppingCart(ShoppingCartDTO shoppingCartDTO) {
+    public BigDecimal addShoppingCart(ShoppingCartDTO shoppingCartDTO) {
         Milk milk = new Milk();
         milk.setId(shoppingCartDTO.getMilkId());
         milk.setStatus(StatusConstant.ENABLE);
@@ -52,24 +52,28 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         if (milkVO.getAmount() < shoppingCartDTO.getNumber()) {
             throw new AmountNotEnoughException(MessageConstant.AMOUNT_NOT_ENOUGH);
         }
+        BigDecimal result;
         //根据userId和milkId查找购物车表是否有数据，如果有就更新数量和金额，否则就插入一条数据
         ShoppingCart shoppingCart = shoppingCartMapper.getByUIDMID(BaseContext.getCurrentId(), milkVO.getId());
         if (shoppingCart == null) {
+            result=milkVO.getPrice().multiply(BigDecimal.valueOf(shoppingCartDTO.getNumber()));
             shoppingCart = ShoppingCart.builder()
                     .userId(BaseContext.getCurrentId())
                     .milkId(milkVO.getId())
                     .name(milkVO.getName())
                     .image(milkVO.getImage())
                     .number(shoppingCartDTO.getNumber())
-                    .amount(milkVO.getPrice().multiply(BigDecimal.valueOf(shoppingCartDTO.getNumber())))
+                    .amount(result)
                     .createTime(LocalDateTime.now())
                     .build();
             shoppingCartMapper.insert(shoppingCart);
         } else {
+            result=shoppingCart.getAmount().add(milkVO.getPrice().multiply(BigDecimal.valueOf(shoppingCartDTO.getNumber())));
             shoppingCart.setNumber(shoppingCart.getNumber() + shoppingCartDTO.getNumber());
-            shoppingCart.setAmount(shoppingCart.getAmount().add(milkVO.getPrice().multiply(BigDecimal.valueOf(shoppingCartDTO.getNumber()))));
+            shoppingCart.setAmount(result);
             shoppingCartMapper.updateNA(shoppingCart);
         }
+       return result;
     }
 
     /**
@@ -99,7 +103,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
      */
     @Transactional
     @Override
-    public void subShoppingCart(ShoppingCartDTO shoppingCartDTO) {
+    public BigDecimal subShoppingCart(ShoppingCartDTO shoppingCartDTO) {
         Milk milk = new Milk();
         milk.setId(shoppingCartDTO.getMilkId());
         milk.setStatus(StatusConstant.ENABLE);
@@ -113,13 +117,17 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         if (shoppingCart == null) {
             throw new MilkNoFoundException(MessageConstant.MILK_NOT_EXIST);
         }
+        BigDecimal result;
         if (shoppingCart.getNumber() <= AmountConstant.DEFAULT_Min) {
+            result=BigDecimal.ZERO;
             shoppingCartMapper.deleteByID(shoppingCart.getId());
         } else {
+            result=shoppingCart.getAmount().subtract(milkVO.getPrice());
             shoppingCart.setNumber(shoppingCart.getNumber() - AmountConstant.DEFAULT_Min);
-            shoppingCart.setAmount(shoppingCart.getAmount().subtract(milkVO.getPrice()));
+            shoppingCart.setAmount(result);
             shoppingCartMapper.updateNA(shoppingCart);
         }
+        return result;
     }
 
     @Override

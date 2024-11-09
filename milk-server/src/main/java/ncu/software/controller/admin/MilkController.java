@@ -22,6 +22,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/admin/milk")
@@ -137,5 +138,10 @@ public Result<List<MilkSaleDataVO>> getMilkSaleDataOfDay(@PathVariable String  d
         LocalDateTime beginDateTime = LocalDateTime.of(day, LocalTime.MIN);
         LocalDateTime endDateTime = LocalDateTime.of(day, LocalTime.MAX);
         return Result.success(milkService.getMilksSaleData(beginDateTime, endDateTime));
+    }
+    @GetMapping("/allMilkName")
+    public Result<List<String>> getAllMilkName() {
+        List<String> milkNames = milkService.getAllMilkName();
+        return Result.success(milkNames);
     }
 }

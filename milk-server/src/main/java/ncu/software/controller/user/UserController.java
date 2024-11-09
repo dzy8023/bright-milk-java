@@ -45,7 +45,6 @@ public class UserController {
         return Result.success("发送成功");
     }
 
-
     /**
      * 用户注册
      *

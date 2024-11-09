@@ -15,6 +15,9 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface MilkMapper {
@@ -96,4 +99,6 @@ public interface MilkMapper {
     Integer countByMilkId(Long id);
 
     MilkDisDetailVO getMilkDisDetail(Long id);
+    @Select("select distinct name as value from milk")
+    List<String> getAllMilkName();
 }
